@@ -12,7 +12,7 @@ interface Slide {
 const slides: Slide[] = [
   {
     id: 1,
-    imageSrc: "", // User can add slide 1 image here
+    imageSrc: "/heroImg.png",
     gradient: "from-[#3B388D] via-zinc-950 to-black",
   },
   {
@@ -30,35 +30,41 @@ const slides: Slide[] = [
 export default function HeroCarousel() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
-  const SLIDE_DURATION = 3000; // 3 seconds
+  const SLIDE_DURATION = 6000; // 6 seconds for a slower, smoother experience
   const UPDATE_INTERVAL = 30; // Smooth 30ms timer updates
 
   useEffect(() => {
-    setProgress(0);
+    if (isPaused) return;
 
-    const progressTimer = setInterval(() => {
+    const timer = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
-          return 100;
+          setCurrentSlide((curr) => (curr + 1) % slides.length);
+          return 0;
         }
         return prev + (UPDATE_INTERVAL / SLIDE_DURATION) * 100;
       });
     }, UPDATE_INTERVAL);
 
-    const slideTimer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-      setProgress(0);
-    }, SLIDE_DURATION);
+    return () => clearInterval(timer);
+  }, [isPaused]);
 
-    return () => {
-      clearInterval(progressTimer);
-      clearInterval(slideTimer);
-    };
-  }, [currentSlide]);
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
+    setProgress(0);
+  };
 
   return (
-    <section className="relative w-full overflow-hidden bg-black text-white p-0 m-0">
+    <section
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onFocus={() => setIsPaused(true)}
+      onBlur={() => setIsPaused(false)}
+      className="relative w-full overflow-hidden bg-black text-white p-0 m-0 select-none"
+      aria-label="Hero Carousel"
+    >
       {/* Full Viewport-Width Slide Container (No inner margins/borders) */}
       <div className="w-full relative h-[calc(100vh-4.5rem)] max-h-[520px] sm:max-h-[580px]">
         {slides.map((slide, index) => {
@@ -100,7 +106,7 @@ export default function HeroCarousel() {
                         d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                       />
                     </svg>
-                    <span className="text-sm font-mono tracking-widest uppercase font-semibold">
+                    <span className="px-4 text-center text-xs sm:text-sm font-mono tracking-wider sm:tracking-widest uppercase font-semibold break-words">
                       [ Full-Width Blank Image Slot {slide.id} — Add Image Here ]
                     </span>
                   </div>
@@ -110,26 +116,29 @@ export default function HeroCarousel() {
           );
         })}
 
-        {/* Bottom 3-Second Progress Bar Timer & Slide Counter */}
+        {/* Bottom Progress Bar Timer & Slide Selector */}
         <div className="absolute bottom-0 left-0 right-0 z-30 flex flex-col items-center justify-center pb-4 pt-6 bg-gradient-to-t from-black/80 via-black/30 to-transparent">
           <div className="flex items-center gap-3">
             {slides.map((_, idx) => (
-              <div
+              <button
                 key={idx}
-                className={`h-1.5 rounded-full transition-all duration-300 overflow-hidden ${
+                type="button"
+                onClick={() => goToSlide(idx)}
+                aria-label={`Go to slide ${idx + 1}`}
+                className={`h-1.5 rounded-full transition-all duration-300 overflow-hidden cursor-pointer ${
                   idx === currentSlide
                     ? "w-20 bg-white/30"
-                    : "w-4 bg-white/20"
+                    : "w-4 bg-white/20 hover:bg-white/40"
                 }`}
               >
-                {/* Fill bar animating over 3 seconds for current slide */}
+                {/* Fill bar animating over slide duration for current slide */}
                 {idx === currentSlide && (
                   <div
                     className="h-full bg-white rounded-full transition-all ease-linear"
                     style={{ width: `${Math.min(progress, 100)}%` }}
                   />
                 )}
-              </div>
+              </button>
             ))}
           </div>
         </div>

@@ -1,25 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 
 export default function WhatsAppButton() {
-  const [showTooltip, setShowTooltip] = useState(false);
   const phoneNumber = "8801831337699"; // Sentinel S4 hotline
   const message = encodeURIComponent(
     "Hello Sentinel Secure Services, I would like to inquire about your security services."
   );
 
   return (
-    <div className="fixed left-5 bottom-6 z-50 flex items-center group">
+    <div className="fixed left-4 sm:left-5 bottom-4 sm:bottom-6 z-50 flex items-center group">
       {/* WhatsApp Sticky Floating Button */}
       <Link
         href={`https://wa.me/${phoneNumber}?text=${message}`}
         target="_blank"
         rel="noopener noreferrer"
-        onMouseEnter={() => setShowTooltip(true)}
-        onMouseLeave={() => setShowTooltip(false)}
-        className="relative flex items-center justify-center w-14 h-14 bg-[#25D366] hover:bg-[#20ba5a] text-white rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 group shadow-emerald-950/60"
+        className="relative flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-[#25D366] hover:bg-[#20ba5a] text-white rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 group shadow-emerald-950/60"
         aria-label="Chat on WhatsApp"
       >
         {/* Subtle Pulse Outer Ring */}

@@ -4,9 +4,43 @@
   --transition-duration-600: 600ms;
 }
 
+html {
+  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
 html, body {
   background-color: #000000;
   color: #ffffff;
+  overflow-x: clip;
+}
+
+/* Rotating border animation for highlighted containers */
+@keyframes borderRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-border-rotate {
+  animation: borderRotate 4s linear infinite;
+}
+
+/* Pulsing ambient border glow */
+@keyframes borderPulse {
+  0%, 100% {
+    box-shadow: 0 0 30px -5px rgba(59, 56, 141, 0.4), 0 0 60px -10px rgba(96, 165, 250, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 55px 0px rgba(59, 56, 141, 0.75), 0 0 100px -5px rgba(96, 165, 250, 0.45);
+  }
+}
+
+.animate-border-pulse {
+  animation: borderPulse 3s ease-in-out infinite;
 }
 
 /* Silver shine sweep for logo */

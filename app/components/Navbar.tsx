@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
 const navItems = [
   { label: "HOME", href: "/" },
-  { label: "ABOUT", href: "#about" },
   { label: "SERVICES", href: "#services" },
   { label: "OUR CLIENTS", href: "#clients" },
+  { label: "ABOUT", href: "#about" },
   { label: "CONTACT", href: "#contact" },
 ];
 
@@ -23,11 +23,82 @@ export default function Navbar() {
   const [activeItem, setActiveItem] = useState("HOME");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Close mobile menu on desktop resize or Escape key
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setMobileMenuOpen(false);
+      }
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  const handleNavClick = (
+    e: React.MouseEvent,
+    href: string,
+    label: string
+  ) => {
+    setActiveItem(label);
+    if (typeof window === "undefined") return;
+
+    if (href === "/") {
+      e.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+      window.history.pushState(null, "", "/");
+      return;
+    }
+
+    if (href.startsWith("#")) {
+      const targetId = href.substring(1);
+      const targetElement = document.getElementById(targetId);
+      if (targetElement) {
+        e.preventDefault();
+        const ticker = document.getElementById("navbar-ticker");
+        const headerBar = document.getElementById("navbar-header-bar");
+        const navbarHeight =
+          (ticker ? ticker.offsetHeight : 0) +
+          (headerBar ? headerBar.offsetHeight : 0);
+
+        const targetTop =
+          targetElement.getBoundingClientRect().top + window.scrollY;
+        // Position target section exactly flush beneath the sticky navbar
+        const targetScrollPosition = Math.max(0, targetTop - navbarHeight);
+
+        window.scrollTo({
+          top: targetScrollPosition,
+          behavior: "smooth",
+        });
+
+        window.history.pushState(null, "", href);
+        window.dispatchEvent(
+          new CustomEvent("nav-section-click", { detail: href })
+        );
+      }
+    }
+  };
+
   return (
-    <div className="w-full sticky top-0 z-40">
+    <div id="main-navbar" className="w-full sticky top-0 z-40">
       
       {/* Compact Top News Headlines Marquee Ticker Bar */}
-      <div className="w-full bg-zinc-950 border-b border-white/10 text-white py-1 px-4 flex items-center overflow-hidden relative shadow-inner">
+      <div
+        id="navbar-ticker"
+        className="w-full bg-zinc-950 border-b border-white/10 text-white py-1 px-4 flex items-center overflow-hidden relative shadow-inner"
+      >
         <div className="overflow-hidden whitespace-nowrap w-full text-[11px] font-semibold text-zinc-300">
           <div className="animate-marquee flex gap-12">
             {[...headlines, ...headlines].map((text, idx) => (
@@ -43,10 +114,17 @@ export default function Navbar() {
       {/* Compact Squared Navbar Header (h-14 md:h-16) */}
       <header className="w-full bg-[#3B388D] text-white shadow-xl border-b border-[#2e2b73] transition-all duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14 md:h-16">
+          <div
+            id="navbar-header-bar"
+            className="flex items-center justify-between h-14 md:h-16"
+          >
             
             {/* Big Logo on the Left */}
-            <Link href="/" className="flex items-center group shrink-0">
+            <Link
+              href="/"
+              onClick={(e) => handleNavClick(e, "/", "HOME")}
+              className="flex items-center group shrink-0"
+            >
               <Image
                 src="/big_logo_nobg.png"
                 alt="Sentinel Secure Services"
@@ -58,15 +136,15 @@ export default function Navbar() {
             </Link>
 
             {/* 5 Navigation Links with Horizontal Underline */}
-            <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8 text-xs font-extrabold tracking-wider">
+            <nav className="hidden lg:flex items-center space-x-4 xl:space-x-7 text-[11px] xl:text-xs font-extrabold tracking-wider">
               {navItems.map((item) => {
                 const isActive = activeItem === item.label;
                 return (
                   <Link
                     key={item.label}
                     href={item.href}
-                    onClick={() => setActiveItem(item.label)}
-                    className={`relative py-1 transition-all duration-200 uppercase ${
+                    onClick={(e) => handleNavClick(e, item.href, item.label)}
+                    className={`relative py-1 transition-all duration-200 uppercase whitespace-nowrap ${
                       isActive
                         ? "text-white font-black"
                         : "text-white/80 hover:text-white"
@@ -83,12 +161,12 @@ export default function Navbar() {
             </nav>
 
             {/* Compact Action Buttons with Hover-Only Silver Shine */}
-            <div className="hidden sm:flex items-center space-x-2.5 shrink-0">
+            <div className="hidden sm:flex items-center space-x-2 xl:space-x-2.5 shrink-0">
               
               {/* Button 1: APPLY FOR A JOB (Red) */}
               <Link
                 href="#apply-job"
-                className="group relative overflow-hidden bg-[#e61e2b] hover:bg-red-600 text-white text-[11px] md:text-xs font-extrabold px-4 py-2 rounded-full uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-red-600/40 hover:scale-105 active:scale-95 flex items-center justify-center"
+                className="group relative overflow-hidden bg-[#e61e2b] hover:bg-red-600 text-white text-[10px] md:text-[11px] xl:text-xs font-extrabold px-3 sm:px-3.5 md:px-4 py-1.5 md:py-2 rounded-full uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-red-600/40 hover:scale-105 active:scale-95 flex items-center justify-center whitespace-nowrap"
               >
                 <span className="relative z-10">APPLY FOR A JOB</span>
                 <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-full">
@@ -99,7 +177,7 @@ export default function Navbar() {
               {/* Button 2: APPLY FOR A GUARD (Green) */}
               <Link
                 href="#apply-guard"
-                className="group relative overflow-hidden bg-[#10B981] hover:bg-[#059669] text-white text-[11px] md:text-xs font-extrabold px-4 py-2 rounded-full uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-emerald-500/40 hover:scale-105 active:scale-95 flex items-center justify-center"
+                className="group relative overflow-hidden bg-[#10B981] hover:bg-[#059669] text-white text-[10px] md:text-[11px] xl:text-xs font-extrabold px-3 sm:px-3.5 md:px-4 py-1.5 md:py-2 rounded-full uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-emerald-500/40 hover:scale-105 active:scale-95 flex items-center justify-center whitespace-nowrap"
               >
                 <span className="relative z-10">APPLY FOR A GUARD</span>
                 <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-full">
@@ -153,9 +231,9 @@ export default function Navbar() {
                 <Link
                   key={item.label}
                   href={item.href}
-                  onClick={() => {
-                    setActiveItem(item.label);
+                  onClick={(e) => {
                     setMobileMenuOpen(false);
+                    handleNavClick(e, item.href, item.label);
                   }}
                   className={`block px-4 py-2 text-sm font-extrabold uppercase transition-all rounded-lg ${
                     isActive
