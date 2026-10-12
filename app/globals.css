@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+@theme {
+  --transition-duration-600: 600ms;
+}
+
+html, body {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+/* Silver shine sweep for logo */
+@keyframes silverShine {
+  0% {
+    transform: translate(150%, -150%) rotate(-45deg);
+  }
+  70%, 100% {
+    transform: translate(-150%, 150%) rotate(-45deg);
+  }
+}
+
+.animate-silver-shine {
+  animation: silverShine 2.5s ease-in-out infinite;
+}
+
+/* Button light beam shimmer animation - triggers on hover */
+@keyframes buttonShine {
+  0% {
+    transform: translateX(-150%) skewX(-25deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(250%) skewX(-25deg);
+    opacity: 1;
+  }
+}
+
+.group:hover .animate-button-shine-hover {
+  animation: buttonShine 0.75s ease-in-out forwards;
+}
+
+/* Continuous Marquee Ticker for News Channel Headline */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 24s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}

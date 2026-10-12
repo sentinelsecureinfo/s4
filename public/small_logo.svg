@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 550" width="100%" height="100%">
+  <defs>
+    <clipPath id="innerShieldClip">
+      <path d="M 250 45 C 330 45 420 80 420 120 C 420 310 330 430 250 480 C 170 430 80 310 80 120 C 80 80 170 45 250 45 Z" />
+    </clipPath>
+  </defs>
+
+  <!-- Outer Red Shield -->
+  <path d="M 250 20 C 350 20 450 60 450 110 C 450 340 350 470 250 520 C 150 470 50 340 50 110 C 50 60 150 20 250 20 Z" fill="#d91b36" />
+
+  <!-- Outer Navy Border Shield -->
+  <path d="M 250 35 C 340 35 432 72 432 116 C 432 328 340 452 250 500 C 160 452 68 328 68 116 C 68 72 160 35 250 35 Z" fill="#1b1e36" />
+
+  <!-- Inner White Shield Base -->
+  <path d="M 250 50 C 330 50 415 84 415 122 C 415 315 330 435 250 482 C 170 435 85 315 85 122 C 85 84 170 50 250 50 Z" fill="#ffffff" />
+
+  <!-- Security Officer Silhouette (Upper Half) -->
+  <g clip-path="url(#innerShieldClip)">
+    <!-- Officer Hat -->
+    <path d="M 210 145 C 210 125 290 125 290 145 Z" fill="#1b1e36" />
+    <ellipse cx="250" cy="146" rx="48" ry="7" fill="#1b1e36" />
+    <path d="M 225 153 C 225 180 275 180 275 153 Z" fill="#1b1e36" />
+
+    <!-- Uniform Shoulders & Body -->
+    <path d="M 170 240 C 170 195 210 180 250 180 C 290 180 330 195 330 240 L 330 270 L 170 270 Z" fill="#1b1e36" />
+    <!-- Epaulettes -->
+    <rect x="180" y="196" width="30" height="8" rx="2" fill="#ffffff" transform="rotate(-12 195 200)" />
+    <rect x="290" y="196" width="30" height="8" rx="2" fill="#ffffff" transform="rotate(12 305 200)" />
+    
+    <!-- Yellow Mic / Tie Clip -->
+    <path d="M 246 190 L 254 190 L 254 212 L 246 212 Z" fill="#eab308" />
+    <circle cx="250" cy="188" r="4" fill="#eab308" />
+
+    <!-- Swoop Navy Layer over Officer chest -->
+    <path d="M 80 215 Q 250 280 420 215 L 420 490 L 80 490 Z" fill="#1b1e36" />
+  </g>
+
+  <!-- Lower Inner Split Shield (Blue & Red) -->
+  <g>
+    <!-- Left Blue Half -->
+    <path d="M 250 250 L 250 445 C 205 410 162 335 162 250 Q 206 270 250 250 Z" fill="#1d70b8" />
+    <!-- Right Red Half -->
+    <path d="M 250 250 L 250 445 C 295 410 338 335 338 250 Q 294 270 250 250 Z" fill="#d91b36" />
+
+    <!-- S4S Text -->
+    <text x="250" y="365" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="82" fill="#ffffff" text-anchor="middle" letter-spacing="-2">S4S</text>
+  </g>
+</svg>
